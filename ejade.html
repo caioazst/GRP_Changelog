@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="pt_br">
+
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+            integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+
+        <title>Changelog</title>
+        <style media="print">
+            .form-row{display: none;}
+        </style>
+    </head>
+
+    <body>
+        <div class="form">
+            <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+                <div class="collapse navbar-collapse">
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item active">
+                            <a class="nav-link" href="index.html">Inicio</a>
+                        </li>
+                        <li class="nav-item active">
+                            <a class="nav-link" href="ejade.html">Ejade</a>
+                        </li>
+                        <li class="nav-item active">
+                            <a class="nav-link" href="esafira.html">Esafira</a>
+                        </li>
+                        <li class="nav-item active">
+                            <a class="nav-link" href="quartzo.html">Quartzo</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+
+        <div id="app" class="container-fluid">
+            
+            <div class="row">
+                <div class="col">
+                    <h1> {{ message }}
+                        <small v-if="selected.versao_num">
+                            <span class="badge badge-secondary">
+                                {{selected.versao_num}}
+                            </span>
+                        </small>
+                    </h1>
+                </div>
+
+            </div>
+
+            <div class="row">  
+                <div class="col">
+                    <small><span class="badge badge-primary">{{titulo}}</span></small>
+                    <small><span class="badge badge-dark">{{selected.versao_num}}</span></small>
+                    <small><span class="badge badge-warning">{{selected.build}}</span></small>
+                    <small v-if="selected.chamados!=0" ><span class="badge badge-danger">QTD: {{selected.chamados.length}}</span></small>
+                </div>
+                <div class="col">
+                </div>        
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="inputState">Versão</label>
+                            <select id="inputState" class="form-control" v-model="selected" >
+                                <option v-for="changelog of changelogs" 
+                                    :value="changelog">{{changelog.versao_num}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>            
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <p>
+                                <input type="button" value="Imprimir" id="btnImprimir" onclick="window.print()" />
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <table class="table table-striped" id="changelog">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th scope="col">Prioridade</th>
+                                <th scope="col">Pacote</th>
+                                <th scope="col">Chamado</th>
+                                <th scope="col">Chamado_Nome</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-if="!selected.chamados" class="bg-warning">
+                                <td colspan="4">
+                                    <span style="font-weight: bold;text-align: center;">
+                                        Registro encontrado!
+                                    </span> 
+                                </td>
+                            </tr>
+                            <tr v-for="chamado of selected.chamados" >
+                                <td scope="row">{{chamado.Prioridade}}</td>
+                                <td>{{chamado.Pacote}}</td>
+                                <td>
+                                    <a target="_blank" v-bind:href="'https://atendimento.abaco.com.br/glpi/front/ticket.form.php?id=' + chamado.Chamado">
+                                        {{chamado.Chamado}}
+                                    </a>                    
+                                </td>
+                                <td>{{chamado.Chamado_Nome}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>            
+            </div>
+            
+        </div>
+
+        <!-- Optional JavaScript -->
+        <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+            integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+            crossorigin="anonymous">
+        </script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+            crossorigin="anonymous">
+        </script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+            integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+            crossorigin="anonymous">
+        </script>
+
+        <!-- development version, includes helpful console warnings -->
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <script src="https://unpkg.com/jspdf@latest/dist/jspdf.min.js"></script>
+
+        <script>
+
+            var app = new Vue({
+                el: '#app',
+                data: {
+                    message: 'Changelog',
+                    titulo: 'Ejade',
+                    selected:{"chamados":[]},
+                    changelogs: [
+                                    {
+                                        "versao_num":"06.006.00",
+                                        "build":"",
+                                        "chamados": 
+                                        [
+                                        {"Prioridade":"","Pacote":"GESTÃO ADMINISTRATIVA > PATRIMÔNIO > Migração","Chamado":70156,"Chamado_Nome":"[MGR][PAT] MIGRAÇÃO - Bens Móveis","name":"Homologação","plugin_tasklists_taskstates_id":30},
+                                        {"Prioridade":"","Pacote":"GESTÃO DO PLANEJAMENTO, ORÇAMENTO, FINANÇAS E CONTÁBIL > FINANÇAS > PROCESSO > CONSUMO > Empenho","Chamado":156252,"Chamado_Nome":"[FIN] [CNS] [EMP] 5.15 - Erro: o sistema informa que o valor disponível da dotação é menor que o solicitado. No entanto, o saldo disponível na programação orçamentária constante na tela é maior que o saldo informado pela mensagem de erro. ","name":"Homologação","plugin_tasklists_taskstates_id":30},
+                                        {"Prioridade":"","Pacote":"GESTÃO ADMINISTRATIVA > SUPRIMENTOS/ALMOXARIFADO > Migração","Chamado":161268,"Chamado_Nome":"[SUP][MGR] - Migração dos almoxarifados e saldos de materiais","name":"Homologação","plugin_tasklists_taskstates_id":30},
+                                        {"Prioridade":"","Pacote":"GRP > DÚVIDAS e PROBLEMAS > SUPRIMENTOS > Cadastro de Fornecedor","Chamado":165533,"Chamado_Nome":"[SUP] [PROD] ERRO NA INCLUSÃO DE DOCUMENTO","name":"Homologação","plugin_tasklists_taskstates_id":30},
+                                        {"Prioridade":"","Pacote":"GESTÃO ADMINISTRATIVA > CADASTRO ÚNICO > PACOTES DE ENTREGA DE REQUISITOS FUNCIONAIS > Usuários e Perfis","Chamado":149528,"Chamado_Nome":"[CDU] - Criar view para exibir a relação de usuários e perfis de acesso considerado a hierarquia de perfis de acesso","name":"Homologação","plugin_tasklists_taskstates_id":30},
+                                        {"Prioridade":"","Pacote":"GESTÃO ADMINISTRATIVA > SUPRIMENTOS/ALMOXARIFADO > Integrações","Chamado":159924,"Chamado_Nome":"[INT][SUP] - Integração SIGRAH - Devolução de Material","name":"Homologação","plugin_tasklists_taskstates_id":30},
+                                        {"Prioridade":"","Pacote":"GESTÃO ADMINISTRATIVA > SUPRIMENTOS/ALMOXARIFADO > Integrações","Chamado":159923,"Chamado_Nome":"[INT][SUP] - Integração SIGRAH - Inventário","name":"Homologação","plugin_tasklists_taskstates_id":30},
+                                        {"Prioridade":"","Pacote":"GESTÃO ADMINISTRATIVA > SUPRIMENTOS/ALMOXARIFADO > Integrações","Chamado":129578,"Chamado_Nome":"[INT][SUP] - Integração SIGRAH - Entrada de materiais","name":"Homologação","plugin_tasklists_taskstates_id":30},
+                                        {"Prioridade":"","Pacote":"GESTÃO DO PLANEJAMENTO, ORÇAMENTO, FINANÇAS E CONTÁBIL > CONVÊNIOS > PACOTES DE ENTREGA DE REQUISITOS FUNCIONAIS > Execução","Chamado":154440,"Chamado_Nome":"[CNV] -17.02.2022-  Alteração de órgão executor finalizada sem desassociação do contrato","name":"Homologação","plugin_tasklists_taskstates_id":30},
+                                        {"Prioridade":"","Pacote":"GESTÃO ADMINISTRATIVA > PATRIMÔNIO > Integrações","Chamado":110118,"Chamado_Nome":"[INT][PAT][CTB] Integração Sistema CASP - Bens Móveis","name":"Homologação","plugin_tasklists_taskstates_id":30},
+                                        {"Prioridade":"","Pacote":"GESTÃO ADMINISTRATIVA > COMPRAS > PACOTES DE ENTREGA DE REQUISITOS FUNCIONAIS > Processo Licitatório Fase Externa","Chamado":166695,"Chamado_Nome":"[CMP] [HML] Pedido de fornecimento","name":"Homologação","plugin_tasklists_taskstates_id":30},
+                                        {"Prioridade":"","Pacote":"GESTÃO ADMINISTRATIVA > SUPRIMENTOS/ALMOXARIFADO > Integrações","Chamado":139674,"Chamado_Nome":"[INT][SUP] - Integração SIGRAH - Transferência de Materiais","name":"Homologação","plugin_tasklists_taskstates_id":30},
+                                        {"Prioridade":"","Pacote":"GESTÃO ADMINISTRATIVA > SUPRIMENTOS/ALMOXARIFADO > Integrações","Chamado":159922,"Chamado_Nome":"[INT][SUP] - Integração SIGRAH - Acerto de Estoque","name":"Homologação","plugin_tasklists_taskstates_id":30},
+                                        {"Prioridade":"","Pacote":"GESTÃO ADMINISTRATIVA > SUPRIMENTOS/ALMOXARIFADO > Integrações","Chamado":159893,"Chamado_Nome":"[INT][SUP] - Integração SIGRAH - Saída por doação","name":"Homologação","plugin_tasklists_taskstates_id":30},
+                                        {"Prioridade":"","Pacote":"GESTÃO ADMINISTRATIVA > SUPRIMENTOS/ALMOXARIFADO > Integrações","Chamado":129576,"Chamado_Nome":"[INT][SUP] - Integração SIGRAH - Saída de Material por requisição","name":"Homologação","plugin_tasklists_taskstates_id":30},
+                                        {"Prioridade":"","Pacote":"GRP > DÚVIDAS e PROBLEMAS > COMPRAS > Registro de Preços","Chamado":167062,"Chamado_Nome":"[CMP] [PRD] - Lista de registro de preço.","name":"Homologação","plugin_tasklists_taskstates_id":30}
+                                        ]
+                                    }
+                                ],
+                }
+            });
+            
+        </script>
+
+    </body>
+
+</html>
