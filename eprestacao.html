@@ -41,6 +41,18 @@
             </nav>
         </div>
 
+        <div class="form" style="margin-top:15px">
+            <div class="col">
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                    <input id="img-input" type="file" name="imagem">
+                    <img id="preview" src="">
+                    <input type="submit" value="Limpar" onclick="Limpar()">
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div id="app" class="container-fluid">
 
             <div class="row">
@@ -78,6 +90,18 @@
                         </div>
                     </div>
                 </div>            
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <p>
+                                <input type="button" value="Imprimir" id="btnImprimir" onclick="window.print()" />
+                            </p>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="row">
@@ -134,33 +158,55 @@
         <script src="https://unpkg.com/jspdf@latest/dist/jspdf.min.js"></script>
         
         <script>
-            var app = new Vue({
-                el: '#app',
-                data: {
-                    message: 'Changelog',
-                    titulo: 'ePrestação Contas',
-                    selected:{"chamados":[]},
-                    changelogs: [
-                                    {
-                                        "versao_num":"05.200",
-                                        "build":"",
-                                        "chamados":[{"Prioridade":"Alta","Pacote":"GERENCIADOR SICOM > PACOTES > Alteração de Regra","Chamado":75926,"Chamado_Nome":"[SICOM] Atualização de Layout 2020 - Arquivo LQD"},{"Prioridade":"Alta","Pacote":"GERENCIADOR SICOM > PACOTES > Erros de origem de dados","Chamado":99008,"Chamado_Nome":"[Reprocessamento SICOM 2019]  BHTRANS Janeiro - Arquivo CTB, REC e CONV"},{"Prioridade":"Alta","Pacote":"GERENCIADOR SICOM > PACOTES > Erros de origem de dados","Chamado":98965,"Chamado_Nome":"[Reprocessamento SICOM 2019]  BHTRANS Janeiro - Arquivo EMP "},{"Prioridade":"Alta","Pacote":"GERENCIADOR SICOM > PACOTES > Alteração de Regra","Chamado":99045,"Chamado_Nome":"[Reprocessamento SICOM 2019]  BHTRANS Janeiro - Arquivo EXT"},{"Prioridade":"Alta","Pacote":"GERENCIADOR SICOM > PACOTES > Erros de Extração","Chamado":105618,"Chamado_Nome":"GRP - PRODUÇÃO - EDITAL - Extração/Geração - demora excessiva, horário errado e falta de registro do horário d último processamento."}]
-                                    },{
-                                        "versao_num":"05.200",
-                                        "build":"Build #191 (29/07/2020 13:53:58)",
-                                        "chamados":[{"Prioridade":"Crítica","Pacote":"GERENCIADOR SICOM > PACOTES > PACOTE 10 - Interface de software e documentos","Chamado":58605,"Chamado_Nome":"[SICOM] EDITAIS 2020"}]
-                                    },{
-                                        "versao_num":"05.199",
-                                        "build":"Build #172 (22/07/2020 13:42:23)",
-                                        "chamados":[{"Prioridade":"Crítica","Pacote":"GERENCIADOR SICOM > PACOTES > PACOTE 10 - Interface de software e documentos","Chamado":58605,"Chamado_Nome":"[SICOM] EDITAIS 2020"}]
-                                    }, {
-                                        "versao_num":"05.196",
-                                        "build":"Build #169 (21/07/2020 13:39:44)",
-                                        "chamados":[{"Prioridade":"Crítica","Pacote":"GERENCIADOR SICOM > PACOTES > PACOTE 10 - Interface de software e documentos","Chamado":58605,"Chamado_Nome":"[SICOM] EDITAIS 2020"}]
-                                    }
-                                ]
+            function readImage() {
+                if (this.files && this.files[0]) {
+                    var file = new FileReader();
+                    file.onload = function(e) {
+                        URLJson = e.target.result;
+                        var request = new XMLHttpRequest();
+                        request.open('GET', URLJson);
+                        request.responseType = 'json';
+                        request.send();
+                        request.onload = function() {
+                        var valor = request.response;
+                        app.changelogs[0].chamados = valor;
+                        console.log(JSON.stringify(app.changelogs[0].chamados));
+                        }
+                    };       
+                    file.readAsDataURL(this.files[0]);
+                    var numversao = prompt("Digite o Número da Versão: ");
+                    app.changelogs[0].versao_num = numversao;
+                    var numbuild = prompt("Coloque as Informações do Build: ");
+                    app.changelogs[0].build = numbuild;
                 }
-            });
+            }
+            document.getElementById("img-input").addEventListener("change", readImage, false);
+        </script>
+  
+        <script >
+            var app = new Vue({
+            el: '#app',
+            data: {
+                message: 'Changelog',
+                titulo: 'Ejade',
+                selected:{"chamados":[]},
+                changelogs: [
+                                {
+                                    "versao_num":"",
+                                    "build":"",
+                                    "chamados": ""
+                                } 
+                            ]
+            } 
+            }); 
+                
+        </script>
+
+        <script>
+            function Limpar(){
+                console.log("função limpar ");
+                location.reload();
+            }
         </script>
 
     </body>
